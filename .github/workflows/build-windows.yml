@@ -1,0 +1,108 @@
+name: 'Build Windows Release'
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Release Tag (e.g. v3.2.1-zh)'
+        required: false
+        default: 'v3.2.1-zh'
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+          targets: x86_64-pc-windows-msvc
+
+      - name: Install cargo-about
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-about
+
+      - name: Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Tauri app
+        run: npm run tauri build
+
+      - name: Prepare release files
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path "release-artifacts" -Force | Out-Null
+          
+          $pkg = Get-Content -Raw "package.json" | ConvertFrom-Json
+          $version = $pkg.version
+
+          # Find NSIS setup installer
+          $nsisExe = Get-ChildItem -Path "src-tauri/target" -Recurse -Filter "*-setup.exe" | Select-Object -First 1
+          if ($nsisExe) {
+            Write-Host "Found installer: $($nsisExe.FullName)"
+            Copy-Item $nsisExe.FullName -Destination "release-artifacts/Open.Video.Downloader_${version}_x64-setup.exe" -Force
+          } else {
+            Write-Warning "NSIS setup installer not found!"
+          }
+
+          # Find raw executable for portable package
+          $mainExe = Get-ChildItem -Path "src-tauri/target" -Recurse -Filter "open-video-downloader.exe" | Where-Object { $_.FullName -notmatch "bundle" } | Select-Object -First 1
+          if ($mainExe) {
+            Write-Host "Found raw executable: $($mainExe.FullName)"
+            $portableDir = "portable-temp/ovd-portable"
+            New-Item -ItemType Directory -Path $portableDir -Force | Out-Null
+            New-Item -ItemType File -Path "$portableDir/.keep" -Value "Do not remove this file or directory." -Force | Out-Null
+            Copy-Item $mainExe.FullName -Destination "portable-temp/Open.Video.Downloader_${version}_x64.exe" -Force
+            Compress-Archive -Path "portable-temp/*" -DestinationPath "release-artifacts/Open.Video.Downloader_${version}_x64-portable.zip" -Force
+          } else {
+            Write-Warning "Main executable not found!"
+          }
+
+          Get-ChildItem -Path "release-artifacts"
+
+      - name: Upload artifacts to Action
+        uses: actions/upload-artifact@v4
+        with:
+          name: Open-Video-Downloader-Windows-x64
+          path: release-artifacts/*
+
+      - name: Create or Update GitHub Release
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.event.inputs.tag_name || github.ref_name }}
+          name: Open Video Downloader ${{ github.event.inputs.tag_name || github.ref_name }} (Simplified Chinese)
+          body: |
+            ## Open Video Downloader 简体中文版 (Windows x64)
+
+            基于 Open Video Downloader (Tauri + Vue) 官方仓库分支构建，包含完整的简体中文本地化支持。
+
+            ### 下载说明
+            * **`Open.Video.Downloader_3.2.1_x64-setup.exe`**: Windows 标准安装包（支持简体中文安装向导）
+            * **`Open.Video.Downloader_3.2.1_x64-portable.zip`**: Windows 便携免安装版（解压即可使用）
+          files: release-artifacts/*
+          draft: false
+          prerelease: false
