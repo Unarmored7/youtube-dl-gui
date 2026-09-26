@@ -10,6 +10,7 @@ import ruRaw from './locales/ru.json';
 import trRaw from './locales/tr.json';
 import ptPTRaw from './locales/pt-PT.json';
 import ptBRRaw from './locales/pt-BR.json';
+import zhCNRaw from './locales/zh-CN.json';
 import zhTWRaw from './locales/zh-TW.json';
 import { detectBrowserLanguageCodes } from './helpers/subtitles/languages.ts';
 
@@ -25,6 +26,7 @@ export const availableLocales = {
   'tr': true,
   'pt-PT': true,
   'pt-BR': true,
+  'zh-CN': true,
   'zh-TW': true,
 } as const;
 
@@ -41,15 +43,22 @@ const ru = ruRaw as unknown as MessageSchema;
 const tr = trRaw as unknown as MessageSchema;
 const ptPT = ptPTRaw as unknown as MessageSchema;
 const ptBR = ptBRRaw as unknown as MessageSchema;
+const zhCN = zhCNRaw as unknown as MessageSchema;
 const zhTW = zhTWRaw as unknown as MessageSchema;
 
 const localeAliases: Record<string, Locale> = {
   'pt': 'pt-PT',
   'pt-PT': 'pt-PT',
   'pt-BR': 'pt-BR',
-  'zh': 'zh-TW',
+  'zh': 'zh-CN',
+  'zh-CN': 'zh-CN',
+  'zh-SG': 'zh-CN',
+  'zh-Hans': 'zh-CN',
+  'zh-Hans-CN': 'zh-CN',
   'zh-Hant': 'zh-TW',
   'zh-TW': 'zh-TW',
+  'zh-HK': 'zh-TW',
+  'zh-MO': 'zh-TW',
   'no': 'nb',
   'nb-NO': 'nb',
 };
@@ -95,6 +104,7 @@ export const i18n = createI18n<[MessageSchema], Locale, false>({
     tr,
     'pt-PT': ptPT,
     'pt-BR': ptBR,
+    'zh-CN': zhCN,
     'zh-TW': zhTW,
   },
 });

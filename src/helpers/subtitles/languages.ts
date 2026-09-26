@@ -11,6 +11,7 @@ const codes = ISO6391.getAllCodes();
 const expandedCodes: Record<string, SubtitleLanguageOption> = {
   'pt-PT': { code: 'pt-PT', englishName: 'Portuguese (Portugal)', nativeName: 'Português (Portugal)' },
   'pt-BR': { code: 'pt-BR', englishName: 'Portuguese (Brazil)', nativeName: 'Português (Brasil)' },
+  'zh-CN': { code: 'zh-CN', englishName: 'Simplified Chinese', nativeName: '简体中文' },
   'zh-TW': { code: 'zh-TW', englishName: 'Traditional Chinese (Taiwan)', nativeName: '繁體中文（台灣）' },
 };
 

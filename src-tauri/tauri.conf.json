@@ -43,7 +43,7 @@
   },
   "bundle": {
     "active": true,
-    "createUpdaterArtifacts": true,
+    "createUpdaterArtifacts": false,
     "targets": ["nsis", "app", "dmg", "appimage", "deb", "rpm"],
     "icon": [
       "icons/32x32.png",
@@ -63,6 +63,8 @@
         "displayLanguageSelector": true,
         "languages": [
           "English",
+          "SimpChinese",
+          "TradChinese",
           "Spanish",
           "Italian",
           "Dutch",
@@ -71,7 +73,6 @@
           "Norwegian",
           "Russian",
           "PortugueseBR",
-          "TradChinese",
           "Turkish"
         ]
       }
@@ -81,7 +82,7 @@
     "updater": {
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDNBRTI0NDIwNzRDQUIzRUMKUldUc3M4cDBJRVRpT21CaVE1VmRZQ3pLSGZKb2F3OGRkM2ZCYXEyYStUQ0UyNnJ0aDBKMXh3eU4K",
       "endpoints": [
-        "https://github.com/jely2002/youtube-dl-gui/releases/latest/download/latest.json"
+        "https://github.com/Unarmored7/youtube-dl-gui/releases/latest/download/latest.json"
       ],
       "windows": {
         "installMode": "passive"
