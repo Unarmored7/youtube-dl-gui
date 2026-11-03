@@ -35,12 +35,16 @@ Try to avoid vague messages like “update stuff”.
 
 You’ll need **Node.js (v24+)** and **Rust (latest stable)** installed.
 
-Clone, install dependencies, and run the app:
+Clone the repository you intend to change, install the locked dependencies, and run the app. For this fork:
 
-```
-npm install
+```sh
+git clone https://github.com/Unarmored7/youtube-dl-gui.git
+cd youtube-dl-gui
+npm ci
 npm run tauri dev
 ```
+
+The native desktop app also needs the platform prerequisites for Tauri. A frontend-only build does not validate the Rust backend or produce an installer. Keep Rust build output outside a synced checkout; for example, set `CARGO_TARGET_DIR` to `~/dev-env/media/youtube-dl-gui/target` on macOS or `D:\dev-env\media\youtube-dl-gui\target` on Windows before running Cargo or Tauri commands.
 
 ## Code style
 
@@ -54,6 +58,18 @@ npm run tauri dev
 - Run `npm run test:unit` for unit tests.
 - Run `npm run test:e2e` for end-to-end tests (Playwright).
 - Rust tests can be run with `cargo test`.
+
+Before committing, follow the full checks in [AGENTS.md](./AGENTS.md):
+
+```sh
+npm run lint:fix
+npm run test:unit
+npx playwright install --with-deps chromium
+npm run test:e2e
+npm run build
+```
+
+From `src-tauri/`, also run `cargo fmt --all`, `cargo clippy --all-targets -- -D warnings`, and `cargo test`. Review any automatic formatting changes before staging them. Record missing native prerequisites or failing checks explicitly; a successful web build alone is not a successful desktop build.
 
 New features and bug fixes should include tests for common cases.  
 Full coverage isn’t required, but regressions should be caught by tests.
@@ -76,7 +92,7 @@ Thank you for helping translate OVD!
 1. Clone the app from GitHub to your local machine.
 2. Run the app in development mode:
     ```bash
-    npm install  
+    npm ci
     npm run tauri dev
     ```
 2. Edit the English locales to preview:

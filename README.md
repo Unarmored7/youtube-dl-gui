@@ -6,6 +6,16 @@
 Open Video Downloader is a simple, cross-platform desktop application that lets you download videos, audio, subtitles and metadata from hundreds of supported websites, not just YouTube.  
 It provides an easy-to-use interface around [yt-dlp](https://github.com/yt-dlp/yt-dlp) so you don’t have to touch the command line.
 
+## About this fork
+
+This repository is [Unarmored7/youtube-dl-gui](https://github.com/Unarmored7/youtube-dl-gui), a Simplified Chinese localization fork of [jely2002/youtube-dl-gui](https://github.com/jely2002/youtube-dl-gui).
+
+- Adds Simplified Chinese (`zh-CN`) interface translations and language selection support.
+- Enables Simplified Chinese in the Windows NSIS installer.
+- Provides the **Build Windows Release** workflow in [GitHub Actions](https://github.com/Unarmored7/youtube-dl-gui/actions/workflows/build-windows.yml), triggered manually or by a `v*` tag. It builds Windows x64 installers and portable archives and publishes them to this fork's [Releases](https://github.com/Unarmored7/youtube-dl-gui/releases).
+
+The download links and package-manager commands below refer to the upstream project. For builds from this fork, check this fork's Releases or the workflow's artifacts instead; do not assume an upstream download contains this fork's changes.
+
 
 ## Features
 
